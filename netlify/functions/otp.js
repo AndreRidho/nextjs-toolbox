@@ -24,7 +24,7 @@ exports.handler = async (event, context, callback) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
+      console.log("Error:" + error);
     } else {
       console.log("OTP sent: " + info.response);
     }
