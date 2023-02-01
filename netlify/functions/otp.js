@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+
 
 // const otpExpiry = 300000; // 5 minutes in milliseconds
 
@@ -19,6 +19,7 @@ const nodemailer = require("nodemailer");
 
 // // Initialize Firebase
 // const app = initializeApp(firebaseConfig);
+const nodemailer = require("nodemailer");
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
@@ -86,17 +87,23 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     let otp = Math.floor(Math.random() * 1000000);
-    if(!sendOTP(event.queryStringParameters.email, otp)){ 
+    if(!sendOTP(event.queryStringParameters.email, otp)){
       callback(null, {
-        result: 'Fail',
-        message: 'Failed to send OTP to email'
+        statusCode: 500,
+        body: JSON.stringify({
+          result: 'Fail',
+          message: 'Failed to send OTP to email'
+        })
       });
       return;
     }
     let token = storeOTP(otp);
     callback(null, {
-      result: 'Success',
-      token: token
+      statusCode: 200,
+      body: JSON.stringify({
+        result: 'Success',
+        token: token
+      })
     });
 
   }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
@@ -121,28 +128,39 @@ exports.handler = async function(event, context, callback) {
 
           if(otpRequest.otp != event.queryStringParameters.otp){
             callback(null, {
-              result: 'Fail',
-              message: 'Invalid OTP'
+              statusCode: 400,
+              body: JSON.stringify({
+                result: 'Fail',
+                message: 'Invalid OTP'
+              })
             });
             return;
           }
 
           if(diffMinutes >= 5){
             callback(null, {
-              result: 'Fail',
-              message: 'OTP has expired'
+              statusCode: 410,
+              body: JSON.stringify({
+                result: 'Fail',
+                message: 'OTP has expired'
+              })
             });
             return;
           }
-
           callback(null, {
-            result: 'Success'
+            statusCode: 200,
+            body: JSON.stringify({
+              result: 'Success'
+            })
           });
         } else {
           console.log("No such document");
           callback(null, {
-            result: 'Fail',
-            message: 'Invalid token'
+            statusCode: 401,
+            body: JSON.stringify({
+              result: 'Fail',
+              message: 'Invalid token'
+            })
           });
           return;
         }
@@ -150,15 +168,21 @@ exports.handler = async function(event, context, callback) {
       .catch(error => {
         console.error("Error getting document:", error);
         callback(null, {
-          result: 'Fail',
-          message: "Error getting document: ", error
+          statusCode: 500,
+          body: JSON.stringify({
+            result: 'Fail',
+            message: 'Invalid token'
+          })
         });
         return;
       });
 
   }else{
     callback(null, {
-      result: 'Fail'
+      statusCode: 400,
+      body: JSON.stringify({
+        result: 'Fail'
+      })
     });
   }
 };
