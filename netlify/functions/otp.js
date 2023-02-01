@@ -7,6 +7,14 @@
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+
+// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+
+// const app = initializeApp(firebaseConfig);
+
+// const db = getFirestore();
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCcPW6LgKrQmZELR6CTf49fZcVNKD7SHYc",
@@ -16,17 +24,8 @@ const firebaseConfig = {
   messagingSenderId: "1076969212972",
   appId: "1:1076969212972:web:3cabd986aeb4852e4f5589"
 };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
 const nodemailer = require("nodemailer");
 const admin = require('firebase-admin');
-// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
-
-// const app = initializeApp(firebaseConfig);
-
-// const db = getFirestore();
 
 async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
@@ -88,12 +87,7 @@ function generateOTP() {
 exports.handler = async function(event, context, callback) {
 
   try {
-    // Initialize Firebase Admin SDK
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ result: 'Fail',
-      message: 'Failed to send OTP to email: ' + admin.initializeApp(firebaseConfig) }),
-    };
+    
     admin.initializeApp(firebaseConfig);
 
     // Get a reference to the Cloud Firestore
