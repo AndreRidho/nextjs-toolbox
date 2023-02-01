@@ -81,12 +81,10 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     
-    callback(null, {
-      statusCode: 400,
-      body: JSON.stringify({
-        result: '1'
-      })
-    });
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: `Color not found:` }),
+    };
 
     let otp = Math.floor(Math.random() * 1000000);
 
