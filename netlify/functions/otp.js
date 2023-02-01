@@ -20,7 +20,7 @@ const nodemailer = require("nodemailer");
 // // Initialize Firebase
 // const app = initializeApp(firebaseConfig);
 // const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 // initializeApp();
 
