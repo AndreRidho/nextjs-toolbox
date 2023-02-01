@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const otpExpiry = 300000; // 5 minutes in milliseconds
+// const otpExpiry = 300000; // 5 minutes in milliseconds
 
 // Import the functions you need from the SDKs you need
 // import { initializeApp } from "firebase/app";
@@ -8,21 +8,21 @@ const otpExpiry = 300000; // 5 minutes in milliseconds
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCcPW6LgKrQmZELR6CTf49fZcVNKD7SHYc",
-  authDomain: "atm-serverless.firebaseapp.com",
-  projectId: "atm-serverless",
-  storageBucket: "atm-serverless.appspot.com",
-  messagingSenderId: "1076969212972",
-  appId: "1:1076969212972:web:3cabd986aeb4852e4f5589"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCcPW6LgKrQmZELR6CTf49fZcVNKD7SHYc",
+//   authDomain: "atm-serverless.firebaseapp.com",
+//   projectId: "atm-serverless",
+//   storageBucket: "atm-serverless.appspot.com",
+//   messagingSenderId: "1076969212972",
+//   appId: "1:1076969212972:web:3cabd986aeb4852e4f5589"
+// };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
-initializeApp();
+// initializeApp();
 
 const db = getFirestore();
 
