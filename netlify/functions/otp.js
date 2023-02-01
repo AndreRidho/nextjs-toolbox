@@ -34,7 +34,7 @@ async function sendOTP(email, otp) {
     secure: true,
     auth: {
       user: "wetmemeslayer1@gmail.com",
-      pass: "andreridho"
+      pass: "rotltdskaidasezd"
     }
   });
 
