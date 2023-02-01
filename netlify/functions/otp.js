@@ -89,6 +89,11 @@ exports.handler = async function(event, context, callback) {
 
   try {
     // Initialize Firebase Admin SDK
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ result: 'Fail',
+      message: 'Failed to send OTP to email: ' + admin.initializeApp(firebaseConfig) }),
+    };
     admin.initializeApp(firebaseConfig);
 
     // Get a reference to the Cloud Firestore
