@@ -8,24 +8,25 @@
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCcPW6LgKrQmZELR6CTf49fZcVNKD7SHYc",
-//   authDomain: "atm-serverless.firebaseapp.com",
-//   projectId: "atm-serverless",
-//   storageBucket: "atm-serverless.appspot.com",
-//   messagingSenderId: "1076969212972",
-//   appId: "1:1076969212972:web:3cabd986aeb4852e4f5589"
-// };
+const firebaseConfig = {
+  apiKey: "AIzaSyCcPW6LgKrQmZELR6CTf49fZcVNKD7SHYc",
+  authDomain: "atm-serverless.firebaseapp.com",
+  projectId: "atm-serverless",
+  storageBucket: "atm-serverless.appspot.com",
+  messagingSenderId: "1076969212972",
+  appId: "1:1076969212972:web:3cabd986aeb4852e4f5589"
+};
 
 // // Initialize Firebase
 // const app = initializeApp(firebaseConfig);
 const nodemailer = require("nodemailer");
-const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const admin = require('firebase-admin');
+// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+// const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
-initializeApp();
+// const app = initializeApp(firebaseConfig);
 
-const db = getFirestore();
+// const db = getFirestore();
 
 async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
@@ -50,7 +51,7 @@ async function sendOTP(email, otp) {
     .catch(error => "Error:" + error.toString());
 }
 
-async function storeOTP(otp){
+async function storeOTP(otp, db){
 
   const now = new Date();
 
@@ -76,110 +77,129 @@ function generateRandomString(length) {
   return result;
 }
 
+function generateOTP() {
+  let otp = "";
+  for (let i = 0; i < 6; i++) {
+    otp += Math.floor(Math.random() * 10);
+  }
+  return otp;
+}
+
 exports.handler = async function(event, context, callback) {
 
-  if('email' in event.queryStringParameters){
+  try {
+    // Initialize Firebase Admin SDK
+    admin.initializeApp(firebaseConfig);
 
-    
-    
+    // Get a reference to the Cloud Firestore
+    const db = admin.firestore();
 
-    let otp = Math.floor(Math.random() * 1000000);
+    if('email' in event.queryStringParameters){
 
-    return sendOTP(event.queryStringParameters.email, otp)
-  .then(sendOTPResult => {
-    if (sendOTPResult.substring(0, 1) == "E") {
+      let otp = generateOTP();
+  
+      return sendOTP(event.queryStringParameters.email, otp)
+    .then(sendOTPResult => {
+      if (sendOTPResult.substring(0, 1) == "E") {
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ result: 'Fail',
+          message: 'Failed to send OTP to email: ' + sendOTPResult }),
+        };
+      }
+      let token = storeOTP(otp, db);
       return {
-        statusCode: 500,
-        body: JSON.stringify({ result: 'Fail',
-        message: 'Failed to send OTP to email: ' + sendOTPResult }),
+        statusCode: 200,
+        body: JSON.stringify({ result: 'Success',
+        token: token }),
       };
-    }
-    let token = storeOTP(otp);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ result: 'Success',
-      token: token }),
-    };
-  });
-
-  }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
-
-    // Get a reference to the "users" collection
-    const collectionRef = db.collection("otp-requests");
-
-    // Get a document from the "users" collection
-    const docRef = collectionRef.doc(event.queryStringParameters.token);
-    docRef
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          console.log(doc.data());
-          otpRequest = doc.data();
-
-          var now = new Date();
-          var otpCreatedAt = otpRequest.created_at;
-
-          let timeDiff = Math.abs(otpCreatedAt.getTime() - now.getTime());
-          let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
-
-          if(otpRequest.otp != event.queryStringParameters.otp){
+    });
+  
+    }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
+  
+      // Get a reference to the "users" collection
+      const collectionRef = db.collection("otp-requests");
+  
+      // Get a document from the "users" collection
+      const docRef = collectionRef.doc(event.queryStringParameters.token);
+      docRef
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            console.log(doc.data());
+            otpRequest = doc.data();
+  
+            var now = new Date();
+            var otpCreatedAt = otpRequest.created_at;
+  
+            let timeDiff = Math.abs(otpCreatedAt.getTime() - now.getTime());
+            let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
+  
+            if(otpRequest.otp != event.queryStringParameters.otp){
+              callback(null, {
+                statusCode: 400,
+                body: JSON.stringify({
+                  result: 'Fail',
+                  message: 'Invalid OTP'
+                })
+              });
+              return;
+            }
+  
+            if(diffMinutes >= 5){
+              callback(null, {
+                statusCode: 410,
+                body: JSON.stringify({
+                  result: 'Fail',
+                  message: 'OTP has expired'
+                })
+              });
+              return;
+            }
             callback(null, {
-              statusCode: 400,
+              statusCode: 200,
+              body: JSON.stringify({
+                result: 'Success'
+              })
+            });
+          } else {
+            console.log("No such document");
+            callback(null, {
+              statusCode: 401,
               body: JSON.stringify({
                 result: 'Fail',
-                message: 'Invalid OTP'
+                message: 'Invalid token'
               })
             });
             return;
           }
-
-          if(diffMinutes >= 5){
-            callback(null, {
-              statusCode: 410,
-              body: JSON.stringify({
-                result: 'Fail',
-                message: 'OTP has expired'
-              })
-            });
-            return;
-          }
+        })
+        .catch(error => {
+          console.error("Error getting document:", error);
           callback(null, {
-            statusCode: 200,
-            body: JSON.stringify({
-              result: 'Success'
-            })
-          });
-        } else {
-          console.log("No such document");
-          callback(null, {
-            statusCode: 401,
+            statusCode: 500,
             body: JSON.stringify({
               result: 'Fail',
               message: 'Invalid token'
             })
           });
           return;
-        }
-      })
-      .catch(error => {
-        console.error("Error getting document:", error);
-        callback(null, {
-          statusCode: 500,
-          body: JSON.stringify({
-            result: 'Fail',
-            message: 'Invalid token'
-          })
         });
-        return;
+  
+    }else{
+      callback(null, {
+        statusCode: 400,
+        body: JSON.stringify({
+          result: 'Fail'
+        })
       });
+    }
 
-  }else{
-    callback(null, {
-      statusCode: 400,
-      body: JSON.stringify({
-        result: 'Fail'
-      })
-    });
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ result: 'Fail', message: error.toString() })
+    };
   }
 };
 
