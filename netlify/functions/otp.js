@@ -148,7 +148,7 @@ exports.handler = async function(event, context, callback) {
           message: 'Failed to send OTP to email: ' + sendOTPResult }),
         };
       }
-      let token = storeOTP(otp, db);
+      return storeOTP(otp, db);
       return {
         statusCode: 200,
         body: JSON.stringify({ result: 'Success',
