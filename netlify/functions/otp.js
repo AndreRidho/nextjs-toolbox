@@ -28,10 +28,13 @@ initializeApp();
 const db = getFirestore();
 
 function sendOTP(email, otp) {
+
+  // let transporter = nodemailer.createTransport(transport[, defaults])
+
   const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
+        port: 465,
+        secure: true,
         auth: {
           user: "wetmemeslayer1@gmail.com",
           pass: "andreridho"
@@ -47,11 +50,9 @@ function sendOTP(email, otp) {
     
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log("Error:" + error);
-          return false;
+          return "Error:" + error;
         } else {
-          console.log("OTP sent: " + info.response);
-          return true;
+          return "OTP sent: " + info.response;
         }
       });
 }
@@ -87,12 +88,14 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     let otp = Math.floor(Math.random() * 1000000);
-    if(!sendOTP(event.queryStringParameters.email, otp)){
+    let sendOTPResult = sendOTP(event.queryStringParameters.email, otp);
+
+    if(sendOTPResult[0] == "E"){
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
           result: 'Fail',
-          message: 'Failed to send OTP to email'
+          message: 'Failed to send OTP to email: ' + sendOTPResult
         })
       });
       return;
