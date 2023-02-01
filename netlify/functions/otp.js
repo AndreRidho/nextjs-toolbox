@@ -85,22 +85,22 @@ exports.handler = async function(event, context, callback) {
 
     let otp = Math.floor(Math.random() * 1000000);
 
-    sendOTP(event.queryStringParameters.email, otp)
-    .then(sendOTPResult => {
-      if (sendOTPResult.substring(0, 1) == "E") {
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ result: 'Fail',
-          message: 'Failed to send OTP to email: ' + sendOTPResult }),
-        };
-      }
-      let token = storeOTP(otp);
+    return sendOTP(event.queryStringParameters.email, otp)
+  .then(sendOTPResult => {
+    if (sendOTPResult.substring(0, 1) == "E") {
       return {
-        statusCode: 200,
-        body: JSON.stringify({ result: 'Success',
-        token: token }),
+        statusCode: 500,
+        body: JSON.stringify({ result: 'Fail',
+        message: 'Failed to send OTP to email: ' + sendOTPResult }),
       };
-    });
+    }
+    let token = storeOTP(otp);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ result: 'Success',
+      token: token }),
+    };
+  });
 
   }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
 
