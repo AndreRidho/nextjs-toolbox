@@ -90,7 +90,7 @@ exports.handler = async function(event, context, callback) {
     let otp = Math.floor(Math.random() * 1000000);
     let sendOTPResult = sendOTP(event.queryStringParameters.email, otp);
 
-    if(sendOTPResult[0] == "E"){
+    if(sendOTPResult.substring(0, 1) == "E"){
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
