@@ -27,7 +27,7 @@ initializeApp();
 
 const db = getFirestore();
 
-function sendOTP(email, otp) {
+async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
