@@ -28,33 +28,26 @@ initializeApp();
 const db = getFirestore();
 
 function sendOTP(email, otp) {
-
-  // let transporter = nodemailer.createTransport(transport[, defaults])
-
   const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: "wetmemeslayer1@gmail.com",
-          pass: "andreridho"
-        }
-      });
-    
-      const mailOptions = {
-        from: "wetmemeslayer1@gmail.com",
-        to: email,
-        subject: "OTP for your transaction",
-        text: `Your OTP is: ${otp}`
-      };
-    
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return "Error:" + error.toString();
-        } else {
-          return "OTP sent: " + info.response.toString();
-        }
-      });
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "wetmemeslayer1@gmail.com",
+      pass: "andreridho"
+    }
+  });
+
+  const mailOptions = {
+    from: "wetmemeslayer1@gmail.com",
+    to: email,
+    subject: "OTP for your transaction",
+    text: `Your OTP is: ${otp}`
+  };
+
+  return transporter.sendMail(mailOptions)
+    .then(info => "OTP sent: " + info.response.toString())
+    .catch(error => "Error:" + error.toString());
 }
 
 async function storeOTP(otp){
@@ -88,25 +81,27 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     let otp = Math.floor(Math.random() * 1000000);
-    let sendOTPResult = sendOTP(event.queryStringParameters.email, otp).toString();
 
-    if(sendOTPResult.substring(0, 1) == "E"){
+    sendOTP(event.queryStringParameters.email, otp)
+    .then(sendOTPResult => {
+      if (sendOTPResult.substring(0, 1) === "E") {
+        callback(null, {
+          statusCode: 500,
+          body: JSON.stringify({
+            result: 'Fail',
+            message: 'Failed to send OTP to email: ' + sendOTPResult
+          })
+        });
+        return;
+      }
+      let token = storeOTP(otp);
       callback(null, {
-        statusCode: 500,
+        statusCode: 200,
         body: JSON.stringify({
-          result: 'Fail',
-          message: 'Failed to send OTP to email: ' + sendOTPResult
+          result: 'Success',
+          token: token
         })
       });
-      return;
-    }
-    let token = storeOTP(otp);
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        result: 'Success',
-        token: token
-      })
     });
 
   }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
