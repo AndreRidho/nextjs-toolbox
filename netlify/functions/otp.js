@@ -50,9 +50,9 @@ function sendOTP(email, otp) {
     
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          return "Error:" + error;
+          return "Error:" + error.toString();
         } else {
-          return "OTP sent: " + info.response;
+          return "OTP sent: " + info.response.toString();
         }
       });
 }
@@ -88,7 +88,7 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     let otp = Math.floor(Math.random() * 1000000);
-    let sendOTPResult = sendOTP(event.queryStringParameters.email, otp);
+    let sendOTPResult = sendOTP(event.queryStringParameters.email, otp).toString();
 
     if(sendOTPResult.substring(0, 1) == "E"){
       callback(null, {
