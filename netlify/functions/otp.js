@@ -88,7 +88,21 @@ exports.handler = async function(event, context, callback) {
 
   try {
     
-    admin.initializeApp(firebaseConfig);
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        "type": "service_account",
+        "project_id": "atm-serverless",
+        "private_key_id": "c3df1f87cd6b5cca62f592b6508f2d89fda1d5c0",
+        "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDSupoiK6Apy2WL\navM/AFpW2yDhsyQ7FVCqSUCoIOKd6aaEJaYh881ijL904gWptHChVt2qdL929awT\n+sae5xaDAwNrqLbhMuGqv1T1jFlchYxrC2Vz4FoF5bxjZW55aJCnSTP9n8stnFRO\nTqIRDAsyt5Abudj8uPtSyNniHUb/iOreoNws9i5EIFVgdCyHuX6rJOqqYuXU3l1/\nVWMtkBiWM6gt/4XhUSTfW3ALuIcHbXRrQnm+q3O410F+orYeZq5AGX771m2zsOgf\nlNn4zoetPsYnoO1jJA4iR+CVrFC9OporOjbZVu+i+AFgm/a6tHSVe8CZVCWTGmzr\nEpiYkx4jAgMBAAECggEACyn3oHfPNGeiKZCw8lWCc7eINmzXLooii+L1mfKkDtmi\nCL413vabmuz596dBxYvZq7J+a9lji1nYk/ZlL2Xuu2IdfEaj6apYakNYrOmSkmRA\n3CruZQUtv8I8CMgG4ke34iTurDEbAn+Vt9BSpbSNo1I2QEHITRs/tVMOt/v1FvSB\nYLgyyx9j6yHQhRk/vdgD7PcwZOZPkf74NScW0yiU3x9rUl+13nJWf4G1IlCydRPk\nKnHTtfTMMDCsy3oPhyNAODjmiXcAyQQdNFnxyCKy8fDh2UVlfpDDqmtRitLFCBbL\nXsKScQPDNLE+lenydgjuLGxXLOCO9xgmpvUE0aJ5gQKBgQDo/+QwiP0gRIxIXxVn\nlYb5VW7sWH8VtbrBaftx2yZbyOgFA5qlXmlC55mmnbzx6v+HGV3fVQNXIQqF1z0h\nGCGcmgTyNlxZlQ1MAZx5GZ2ze2p/QQWdlwXDPfNrpLRNdGcw2o426lS4t/qXi+AW\n17/AYRBkx/SN0qtKVXQtjPTppwKBgQDnh+k9rm3rArHdToL73r/1CpGd3vZb5XC4\nF8M8EZJvjUYl+5JHSH6F0DiYw6wwaKSxRtVnHFjpf0G/eg/UpCXaiRguOBdn4O6n\nSkXJtr/wKnf6pl4OntPOMkQ9CprTS343W3DsyyjVjqSxRC2wsu1QtpfsPoR4g75X\nvN5vRhD/JQKBgCfs4U8nyigjVt533JUZXD2RVCaPq4cu0sedv4ZtBQ+pR4jEa1V2\n7haW1Q9l7CCQIiUmRZ2lVaMyeDki/siS9/97rOlMQ1reXZ7uj794kjtVJJSVsb6l\nSEmCbhm96V90WNJYQRJL6SSV8gzR3R5M7gCrIUIDuXYr6UodhoDfrH/1AoGBAKQH\nd8jJMPpUOGqPWuDSGLCjwjJUabkFPexOeXSvBk2ditsR9boms+xdbhtcVTseh79I\nbZvVS3BxRcU/1sNRX7gJdGYaOwrPIoTGa9bSb/zYOZQMFYrKH0hv+EQ+pR2Y2Fyj\nncdEzzMtEaS8ppoOyW5rTgqC6BrxSwKhvfybaSM5AoGBAJhzSTl+ow2ecFFjuvfW\nkV+D8OJGmbrD6Xj0WdgEDjS+Q+0RHZxRzUSgsxpO9i7cXhCq0sEPrRMjFKk3as82\n9pCDlhEoO+gcNTQdbJgBgUYAz9rGU2L29bqGqTeCi8UczZ3jyYRfQljmikJjd7qA\nxd4lIienCCTYQE+RyqcjLBaw\n-----END PRIVATE KEY-----\n",
+        "client_email": "firebase-adminsdk-sgnr4@atm-serverless.iam.gserviceaccount.com",
+        "client_id": "101194411141745508686",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-sgnr4%40atm-serverless.iam.gserviceaccount.com"
+      }
+      ),
+    });
 
     // Get a reference to the Cloud Firestore
     const db = admin.firestore();
