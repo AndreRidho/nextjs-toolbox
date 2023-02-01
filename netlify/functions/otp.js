@@ -81,33 +81,25 @@ exports.handler = async function(event, context, callback) {
   if('email' in event.queryStringParameters){
 
     
-    return {
-      statusCode: 404,
-      body: JSON.stringify({ error: `Color not found:` }),
-    };
+    
 
     let otp = Math.floor(Math.random() * 1000000);
 
     sendOTP(event.queryStringParameters.email, otp)
     .then(sendOTPResult => {
       if (sendOTPResult.substring(0, 1) == "E") {
-        callback(null, {
+        return {
           statusCode: 500,
-          body: JSON.stringify({
-            result: 'Fail',
-            message: 'Failed to send OTP to email: ' + sendOTPResult
-          })
-        });
-        return;
+          body: JSON.stringify({ result: 'Fail',
+          message: 'Failed to send OTP to email: ' + sendOTPResult }),
+        };
       }
       let token = storeOTP(otp);
-      callback(null, {
+      return {
         statusCode: 200,
-        body: JSON.stringify({
-          result: 'Success',
-          token: token
-        })
-      });
+        body: JSON.stringify({ result: 'Success',
+        token: token }),
+      };
     });
 
   }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
