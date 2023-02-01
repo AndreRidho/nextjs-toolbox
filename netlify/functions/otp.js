@@ -63,6 +63,43 @@ async function storeOTP(otp, db){
     created_at: now,
   });
 
+  docRef
+        .get()
+        .then(doc => {
+          if (doc.exists) {  
+
+              callback(null, {
+                statusCode: 400,
+                body: JSON.stringify({
+                  result: 'Fail',
+                  message: 'Invalid OTP'
+                })
+              });
+              return;
+          } else {
+            console.log("No such document");
+            callback(null, {
+              statusCode: 401,
+              body: JSON.stringify({
+                result: 'Fail',
+                message: 'Invalid token'
+              })
+            });
+            return;
+          }
+        })
+        .catch(error => {
+          console.error("Error getting document:", error);
+          callback(null, {
+            statusCode: 500,
+            body: JSON.stringify({
+              result: 'Fail',
+              message: 'Invalid token'
+            })
+          });
+          return;
+        });
+
   return token;
 
 }
