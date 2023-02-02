@@ -196,7 +196,7 @@ exports.handler = async function(event, context, callback) {
       //     return;
       //   });
   
-    }else if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters){
+    }else if('email' in event.queryStringParameters){
 
       let otp = generateOTP();
   
