@@ -115,7 +115,7 @@ exports.handler = async function(event, context, callback) {
           statusCode: 400,
           body: JSON.stringify({
             result: 'Fail',
-            message: 'Invalid OTP'
+            message: 'Invalid request'
           }),
         };
       }
