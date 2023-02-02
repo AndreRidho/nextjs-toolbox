@@ -63,7 +63,7 @@ async function sendOTP(email, otp) {
 
 function storeOTP(otp, email, now){
 
-  let tokenPlain = otp + email + now.toString;
+  let tokenPlain = otp + email + now.toString();
 
   const hash = crypto.createHash('sha256');
   const data = tokenPlain;
@@ -72,7 +72,7 @@ function storeOTP(otp, email, now){
 
   console.log("debug 1 otp: " + otp);
   console.log("debug 1 email: " + email);
-  console.log("debug 1 time: " + now.toString);
+  console.log("debug 1 time: " + now.toString());
   console.log("debug 1 tokenPlain: " + tokenPlain);
   console.log("debug 1 token: " + token);
 
