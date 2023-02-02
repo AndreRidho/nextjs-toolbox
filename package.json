@@ -18,6 +18,7 @@
     "export": "next export"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
     "cypress": "^10.0.3",
     "firebase": "^9.16.0",
     "firebase-admin": "^11.5.0",
