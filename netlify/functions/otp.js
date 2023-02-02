@@ -199,8 +199,9 @@ exports.handler = async function(event, context, callback) {
     }else if('email' in event.queryStringParameters){
 
       let otp = generateOTP();
+      let email = event.queryStringParameters.email;
   
-      return sendOTP(event.queryStringParameters.email, otp)
+      return sendOTP(email, otp)
     .then(sendOTPResult => {
         if (sendOTPResult.substring(0, 1) == "E") {
           return {
