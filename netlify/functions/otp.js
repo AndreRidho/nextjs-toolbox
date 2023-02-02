@@ -61,7 +61,7 @@ async function sendOTP(email, otp) {
     .catch(error => "Error:" + error.toString());
 }
 
-async function storeOTP(otp, email, now){
+function storeOTP(otp, email, now){
 
   let tokenPlain = otp + email + now.toString;
 
