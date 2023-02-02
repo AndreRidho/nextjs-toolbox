@@ -70,6 +70,12 @@ function storeOTP(otp, email, now){
   hash.update(data);
   const token = hash.digest('hex');
 
+  console.log("debug 1 otp: " + otp);
+  console.log("debug 1 email: " + email);
+  console.log("debug 1 time: " + now.toString);
+  console.log("debug 1 tokenPlain: " + tokenPlain);
+  console.log("debug 1 token: " + token);
+
   return token;
 
 }
@@ -96,6 +102,13 @@ exports.handler = async function(event, context, callback) {
       const data = tokenPlain;
       hash.update(data);
       const token = hash.digest('hex');
+
+      console.log("debug 2 otp: " + event.queryStringParameters.otp);
+      console.log("debug 2 email: " + event.queryStringParameters.email);
+      console.log("debug 2 time: " + event.queryStringParameters.time);
+      console.log("debug 2 tokenPlain: " + tokenPlain);
+      console.log("debug 2 token: " + token);
+      console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
 
       if(token != event.queryStringParameters.token){
         return {
