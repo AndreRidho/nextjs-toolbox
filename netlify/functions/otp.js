@@ -98,6 +98,9 @@ exports.handler = async function(event, context, callback) {
 
       let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + event.queryStringParameters.time;
 
+      console.log(event.body);
+      console.log(event.data);
+
       const hash = crypto.createHash('sha256');
       const data = tokenPlain;
       hash.update(data);
