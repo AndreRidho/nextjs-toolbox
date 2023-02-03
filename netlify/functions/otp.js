@@ -97,7 +97,7 @@ exports.handler = async function(event, context, callback) {
 
     if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
 
-      let time = CryptoJS.AES.decrypt(event.queryStringParameters.time, "4FlatLetsGo");
+      let time = (CryptoJS.AES.decrypt(event.queryStringParameters.time, "4FlatLetsGo")).toString(CryptoJS.enc.Utf8);
 
       let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + time;
 
