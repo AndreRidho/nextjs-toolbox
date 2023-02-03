@@ -37,7 +37,6 @@
 
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
-const CryptoJS = require("crypto-js");
 
 async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
@@ -64,7 +63,7 @@ async function sendOTP(email, otp) {
 
 function storeOTP(otp, email, now){
 
-  let tokenPlain = otp + email + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString();
+  let tokenPlain = otp + email + now.toString();
 
   const hash = crypto.createHash('sha256');
   const data = tokenPlain;
@@ -74,7 +73,6 @@ function storeOTP(otp, email, now){
   console.log("debug 1 otp: " + otp);
   console.log("debug 1 email: " + email);
   console.log("debug 1 time: " + now.toString());
-  console.log("debug 1 time encrypted: " + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString());
   console.log("debug 1 tokenPlain: " + tokenPlain);
   console.log("debug 1 token: " + token);
 
@@ -98,8 +96,6 @@ exports.handler = async function(event, context, callback) {
 
     if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
 
-      let time = (CryptoJS.AES.decrypt(event.queryStringParameters.time, "4FlatLetsGo")).toString(CryptoJS.enc.Utf8);
-
       let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + event.queryStringParameters.time;
 
       const hash = crypto.createHash('sha256');
@@ -109,8 +105,7 @@ exports.handler = async function(event, context, callback) {
 
       console.log("debug 2 otp: " + event.queryStringParameters.otp);
       console.log("debug 2 email: " + event.queryStringParameters.email);
-      console.log("debug 2 time: " + time);
-      console.log("debug 2 time encrypted: " + event.queryStringParameters.time);
+      console.log("debug 2 time: " + event.queryStringParameters.time);
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
       console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
@@ -129,7 +124,7 @@ exports.handler = async function(event, context, callback) {
         };
       }
 
-      let timeDiff = Math.abs((new Date(time)) - now.getTime());
+      let timeDiff = Math.abs((new Date(event.queryStringParameters.time)) - now.getTime());
       let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
 
       if(diffMinutes > 5){
@@ -254,7 +249,7 @@ exports.handler = async function(event, context, callback) {
           body: JSON.stringify({
             result: 'Success',
             token: token,
-            time: CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString()
+            time: now.toString()
           }),
         };
       });
