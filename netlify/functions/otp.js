@@ -74,6 +74,7 @@ function storeOTP(otp, email, now){
   console.log("debug 1 otp: " + otp);
   console.log("debug 1 email: " + email);
   console.log("debug 1 time: " + now.toString());
+  console.log("debug 1 time encrypted: " + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString());
   console.log("debug 1 tokenPlain: " + tokenPlain);
   console.log("debug 1 token: " + token);
 
@@ -109,6 +110,7 @@ exports.handler = async function(event, context, callback) {
       console.log("debug 2 otp: " + event.queryStringParameters.otp);
       console.log("debug 2 email: " + event.queryStringParameters.email);
       console.log("debug 2 time: " + time);
+      console.log("debug 2 time encrypted: " + event.queryStringParameters.time);
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
       console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
