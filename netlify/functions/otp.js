@@ -70,9 +70,11 @@ function storeOTP(otp, email, now){
   hash.update(data);
   const token = hash.digest('hex');
 
+  // buf.toString('base64');
+
   console.log("debug 1 otp: " + otp);
   console.log("debug 1 email: " + email);
-  console.log("debug 1 time: " + now.toString());
+  console.log("debug 1 time: " + Buffer.from(now.toString(), 'base64'));
   console.log("debug 1 tokenPlain: " + tokenPlain);
   console.log("debug 1 token: " + token);
 
@@ -96,7 +98,9 @@ exports.handler = async function(event, context, callback) {
 
     if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
 
-      let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + event.queryStringParameters.time;
+      let time = event.queryStringParameters.time.toString('base64');
+
+      let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + time;
 
       const hash = crypto.createHash('sha256');
       const data = tokenPlain;
@@ -105,7 +109,7 @@ exports.handler = async function(event, context, callback) {
 
       console.log("debug 2 otp: " + event.queryStringParameters.otp);
       console.log("debug 2 email: " + event.queryStringParameters.email);
-      console.log("debug 2 time: " + event.queryStringParameters.time);
+      console.log("debug 2 time: " + time);
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
       console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
@@ -124,7 +128,7 @@ exports.handler = async function(event, context, callback) {
         };
       }
 
-      let timeDiff = Math.abs((new Date(event.queryStringParameters.time)) - now.getTime());
+      let timeDiff = Math.abs((new Date(time)) - now.getTime());
       let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
 
       if(diffMinutes > 5){
