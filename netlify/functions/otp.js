@@ -37,6 +37,7 @@
 
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
+const CryptoJS = require("crypto-js");
 
 async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
