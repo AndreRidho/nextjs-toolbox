@@ -63,14 +63,12 @@ async function sendOTP(email, otp) {
 
 function storeOTP(otp, email, now){
 
-  let tokenPlain = otp + email + Buffer.from(now.toString(), 'base64');
+  let tokenPlain = otp + email + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo");
 
   const hash = crypto.createHash('sha256');
   const data = tokenPlain;
   hash.update(data);
   const token = hash.digest('hex');
-
-  // buf.toString('base64');
 
   console.log("debug 1 otp: " + otp);
   console.log("debug 1 email: " + email);
@@ -98,7 +96,7 @@ exports.handler = async function(event, context, callback) {
 
     if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
 
-      let time = event.queryStringParameters.time.toString('base64');
+      let time = CryptoJS.AES.decrypt(event.queryStringParameters.time, "4FlatLetsGo");
 
       let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + time;
 
@@ -253,7 +251,7 @@ exports.handler = async function(event, context, callback) {
           body: JSON.stringify({
             result: 'Success',
             token: token,
-            time: Buffer.from(now.toString(), 'base64')
+            time: CryptoJS.AES.encrypt(now, "4FlatLetsGo")
           }),
         };
       });
