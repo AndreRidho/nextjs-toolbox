@@ -95,9 +95,9 @@ exports.handler = async function(event, context, callback) {
 
     const now = new Date();
 
-    if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
+    let body = querystring.parse(event.body);
 
-      let body = querystring.parse(event.body);
+    if(body.has('otp') && body.has('token') && body.has('email') && body.has('time')){
 
       let tokenPlain = body.get('otp') + body.get('email') + body.get('time');
 
@@ -111,9 +111,9 @@ exports.handler = async function(event, context, callback) {
       console.log("debug 2 time: " + body.get('time'));
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
-      console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
+      console.log("debug 2 tokenFromParams: " + body.get('token'));
 
-      if(token != event.queryStringParameters.token){
+      if(token != body.get('token')){
         return {
           statusCode: 400,
           headers: {
@@ -127,7 +127,7 @@ exports.handler = async function(event, context, callback) {
         };
       }
 
-      let timeDiff = Math.abs((new Date(event.queryStringParameters.time)) - now.getTime());
+      let timeDiff = Math.abs((new Date(body.get('time'))) - now.getTime());
       let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
 
       if(diffMinutes > 5){
