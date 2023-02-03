@@ -97,23 +97,23 @@ exports.handler = async function(event, context, callback) {
 
     let body = querystring.parse(event.body);
 
-    if(body.has('otp') && body.has('token') && body.has('email') && body.has('time')){
+    if('otp' in body && 'token' in body && 'email' in body && 'time' in body){
 
-      let tokenPlain = body.get('otp') + body.get('email') + body.get('time');
+      let tokenPlain = body.otp + body.email + body.time;
 
       const hash = crypto.createHash('sha256');
       const data = tokenPlain;
       hash.update(data);
       const token = hash.digest('hex');
 
-      console.log("debug 2 otp: " + body.get('otp'));
-      console.log("debug 2 email: " + body.get('email'));
-      console.log("debug 2 time: " + body.get('time'));
+      console.log("debug 2 otp: " + body.otp);
+      console.log("debug 2 email: " + body.email);
+      console.log("debug 2 time: " + body.time);
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
-      console.log("debug 2 tokenFromParams: " + body.get('token'));
+      console.log("debug 2 tokenFromParams: " + body.token);
 
-      if(token != body.get('token')){
+      if(token != body.token){
         return {
           statusCode: 400,
           headers: {
@@ -127,7 +127,7 @@ exports.handler = async function(event, context, callback) {
         };
       }
 
-      let timeDiff = Math.abs((new Date(body.get('time'))) - now.getTime());
+      let timeDiff = Math.abs((new Date(body.time)) - now.getTime());
       let diffMinutes = Math.abs(Math.ceil(timeDiff / (1000 * 60)));
 
       if(diffMinutes > 5){
