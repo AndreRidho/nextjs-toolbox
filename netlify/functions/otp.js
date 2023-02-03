@@ -37,6 +37,7 @@
 
 const crypto = require('crypto');
 const nodemailer = require("nodemailer");
+const querystring = require('node:querystring');
 
 async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
@@ -96,19 +97,18 @@ exports.handler = async function(event, context, callback) {
 
     if('otp' in event.queryStringParameters && 'token' in event.queryStringParameters && 'email' in event.queryStringParameters && 'time' in event.queryStringParameters){
 
-      let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + event.queryStringParameters.time;
+      let body = querystring.parse(event.body);
 
-      console.log(event.body);
-      console.log(event.data);
+      let tokenPlain = body.get('otp') + body.get('email') + body.get('time');
 
       const hash = crypto.createHash('sha256');
       const data = tokenPlain;
       hash.update(data);
       const token = hash.digest('hex');
 
-      console.log("debug 2 otp: " + event.queryStringParameters.otp);
-      console.log("debug 2 email: " + event.queryStringParameters.email);
-      console.log("debug 2 time: " + event.queryStringParameters.time);
+      console.log("debug 2 otp: " + body.get('otp'));
+      console.log("debug 2 email: " + body.get('email'));
+      console.log("debug 2 time: " + body.get('time'));
       console.log("debug 2 tokenPlain: " + tokenPlain);
       console.log("debug 2 token: " + token);
       console.log("debug 2 tokenFromParams: " + event.queryStringParameters.token);
