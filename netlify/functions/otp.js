@@ -113,6 +113,10 @@ exports.handler = async function(event, context, callback) {
       if(token != event.queryStringParameters.token){
         return {
           statusCode: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             result: 'Fail',
             message: 'Invalid request'
@@ -126,6 +130,10 @@ exports.handler = async function(event, context, callback) {
       if(diffMinutes > 5){
         return {
           statusCode: 410,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             result: 'Fail',
             message: 'OTP has expired'
@@ -135,6 +143,10 @@ exports.handler = async function(event, context, callback) {
 
       return {
         statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           result: 'Success',
           message: 'OTP is valid'
@@ -219,6 +231,10 @@ exports.handler = async function(event, context, callback) {
         if (sendOTPResult.substring(0, 1) == "E") {
           return {
             statusCode: 500,
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ result: 'Fail',
             message: 'Failed to send OTP to email: ' + sendOTPResult }),
           };
@@ -226,6 +242,10 @@ exports.handler = async function(event, context, callback) {
         token = storeOTP(otp, email, now);
         return {
           statusCode: 200,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             result: 'Success',
             token: token,
@@ -235,12 +255,16 @@ exports.handler = async function(event, context, callback) {
       });
   
     }else{
-      callback(null, {
+      return {
         statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           result: 'Fail'
-        })
-      });
+        }),
+      };
     }
 
   } catch (error) {
