@@ -44,8 +44,8 @@ async function sendOTP(email, otp) {
     port: 465,
     secure: true,
     auth: {
-      user: "wetmemeslayer1@gmail.com",
-      pass: "rotltdskaidasezd"
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD
     }
   });
 
