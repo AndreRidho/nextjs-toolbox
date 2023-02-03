@@ -99,7 +99,7 @@ exports.handler = async function(event, context, callback) {
 
       let time = (CryptoJS.AES.decrypt(event.queryStringParameters.time, "4FlatLetsGo")).toString(CryptoJS.enc.Utf8);
 
-      let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + time;
+      let tokenPlain = event.queryStringParameters.otp + event.queryStringParameters.email + event.queryStringParameters.time;
 
       const hash = crypto.createHash('sha256');
       const data = tokenPlain;
