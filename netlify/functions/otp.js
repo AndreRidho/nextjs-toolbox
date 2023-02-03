@@ -64,7 +64,7 @@ async function sendOTP(email, otp) {
 
 function storeOTP(otp, email, now){
 
-  let tokenPlain = otp + email + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo");
+  let tokenPlain = otp + email + CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString();
 
   const hash = crypto.createHash('sha256');
   const data = tokenPlain;
@@ -252,7 +252,7 @@ exports.handler = async function(event, context, callback) {
           body: JSON.stringify({
             result: 'Success',
             token: token,
-            time: CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo")
+            time: CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo").toString()
           }),
         };
       });
