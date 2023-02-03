@@ -252,7 +252,7 @@ exports.handler = async function(event, context, callback) {
           body: JSON.stringify({
             result: 'Success',
             token: token,
-            time: CryptoJS.AES.encrypt(now, "4FlatLetsGo")
+            time: CryptoJS.AES.encrypt(now.toString(), "4FlatLetsGo")
           }),
         };
       });
