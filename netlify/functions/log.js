@@ -1,7 +1,7 @@
-import { parse } from "node:querystring";
+const querystring = require("node:querystring");
 
-export async function handler(event, context, callback) {
-  let body = parse(event.body);
+exports.handler = async function (event, context, callback) {
+  let body = querystring.parse(event.body);
   if ("message" in body) {
     return {
       statusCode: 200,
@@ -14,4 +14,4 @@ export async function handler(event, context, callback) {
       }),
     };
   }
-}
+};
