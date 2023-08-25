@@ -5,20 +5,7 @@ exports.handler = async function (event) {
     const queryParams = event.queryStringParameters;
     
     if (queryParams && "message" in queryParams) {
-      const response = {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: queryParams.message,
-        }),
-      };
-      
-      console.log("Response:", response);
-      
-      return response;
+      console.log('message: ' + queryParams.message);
     } else {
       return {
         statusCode: 400,
