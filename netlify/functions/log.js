@@ -1,4 +1,7 @@
-exports.handler = async function (event, context, callback) {
+import { parse } from "node:querystring";
+
+export async function handler(event, context, callback) {
+  let body = parse(event.body);
   if ("message" in body) {
     return {
       statusCode: 200,
@@ -11,4 +14,4 @@ exports.handler = async function (event, context, callback) {
       }),
     };
   }
-};
+}
