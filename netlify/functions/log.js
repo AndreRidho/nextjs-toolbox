@@ -2,9 +2,9 @@ const querystring = require("node:querystring");
 
 exports.handler = async function (event) {
   try {
-    let body = querystring.parse(event.body);
+    const queryParams = event.queryStringParameters;
     
-    if ("message" in body) {
+    if (queryParams && "message" in queryParams) {
       const response = {
         statusCode: 200,
         headers: {
@@ -12,7 +12,7 @@ exports.handler = async function (event) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: body.message,
+          message: queryParams.message,
         }),
       };
       
@@ -27,7 +27,7 @@ exports.handler = async function (event) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          error: "Missing 'message' in request body.",
+          error: "Missing 'message' query parameter.",
         }),
       };
     }
