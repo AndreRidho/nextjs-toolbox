@@ -18,7 +18,7 @@
     "export": "next export"
   },
   "dependencies": {
-    "crypto": "^1.0.1",
+    "@netlify/functions": "^5.1.0",
     "crypto-js": "^4.1.1",
     "cypress": "^10.0.3",
     "firebase": "^9.16.0",
